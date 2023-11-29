@@ -15,7 +15,7 @@ javaLibrary {
     // Declare the target Java versions
     javaVersions = listOf(11, 17, 21)
 
-    // Configure the targets     
+    // Configure the targets using various selectors
     targets {
         common {
             // Common settings for all targets
@@ -30,6 +30,15 @@ javaLibrary {
                 implementation("some-backport")
             }
         }
+        java(17) {
+            // Setting for Java 17
+            dependencies {
+                implementation("some-other-backport")
+            }
+        }
+
+        // No additional settings for Java 21
+        
         // Using `java(20) { }` here would be an error as Java 20 is not declared as a target
     }
 }
@@ -42,27 +51,41 @@ javaLibrary {
     targets {
         common {
             // Common settings for all targets
+            dependencies { }
         }
         java(11) {
             // Settings for Java 11
+            dependencies { }
         }
+        java(17) {
+            // Settings for Java 17
+            dependencies { }
+        }
+
+        // No additional settings for Java 21
+
         // Using `java(20) { }` here would be an error as Java 20 is not declared as a target
     }
 }
 ```
 
-A Java library with one target (the most common by far, and where developers will start)
+A Java library with one target. This is the most common scenario by far, and where developers will start.
 
 ```kotlin
 javaLibrary {
+    // Declare the target Java versions
     javaVersions = listOf(17)
+    
     targets {
         common {
             // What does this mean? Should it be an error?
+            dependencies { }
         }
         java(17) {
             // Or should this one be an error?
+            dependencies { }
         }
+        
         // Using `java(20) { }` here would be an error as this is not declared as a target
     }
 }
@@ -73,9 +96,17 @@ A Kotlin library with multiple targets:
 ```kotlin
 kotlinLibrary {
     // Declare the Kotlin targets 
-    targets = listOf(jvm(21), macOsArm64("14.0"), android(24), wasm("1.1"))
-    
-    // Configure each target
+    kotlinTargets = listOf(
+        jvm(17),
+        jvm(21),
+        macosX86("14.0"),
+        macosArm64("14.0"),
+        android(21),
+        android(24),
+        wasm("1.1")
+    )
+
+    // Configure the targets using various selectors
     targets {
         common {
             // Common settings for all targets
@@ -83,9 +114,20 @@ kotlinLibrary {
                 api("xyz")
             }
         }
-        jvm(21) {
-            // ...
+        native {
+            // Common settings for all native targets
         }
+        macos {
+            // Common settings for all macOS targets
+        }
+        jvm {
+            // Common settings for all JVM targets
+        }
+        jvm(21) {
+            // Settings for Java 21
+        }
+        
+        // No additional configuration for the other targets
     }
 }
 ```
@@ -94,7 +136,8 @@ A Kotlin/JVM library:
 
 ```kotlin
 kotlinLibrary {
-    targets = listOf(jvm(21))
+    kotlinTargets = listOf(jvm(21))
+    
     targets {
         common {
             // What does this mean? Should it be an error?
@@ -128,8 +171,13 @@ javaLibrary {
                 implementation("some-backport")
             }
         }
-        java(17) // Declares Java 17 as a target
-        java(21) // Declares Java 21 as a target
+        java(17) {
+            // Declares Java 17 as a target            
+            dependencies {
+                implementation("some-other-backport")
+            }
+        }
+        java(21) // Declares Java 21 as a target, with no additional configuration
     }
 }
 ```
@@ -168,11 +216,21 @@ kotlinLibrary {
         macos {
             // Common settings for macOS targets
         }
+        jvm {
+            // Common settings for all JVM targets
+        }
+        jvm(17) // Declares Java 17 as a target with no additional configuration
         jvm(21) {
             // Declares Java 21 as a target
         }
+        macOsX64("14.0") { 
+            // Declares macOS 14.0 + intel as a target
+        }
         macOsArm64("14.0") { 
             // Declares macOS 14.0 + Apple Silicon as a target
+        }
+        android(21) {
+            // Declares Android 21 as a target
         }
         android(24) {
             // Declares Android 24 as a target
@@ -203,39 +261,54 @@ kotlinLibrary {
 
 ### Variation: remove Gradle specific concept 'target'
 
+Inline the `targets` block, as it doesn't have much meaning for developers:
+
+A Java library with multiple targets:
+
 ```kotlin
 javaLibrary {
     common {
-        // ...
+        dependencies { }
     }
     java(11) {
-        // ..
+        dependencies { }
     }
     java(17)
     java(21)
 }
 ```
 
+A Java library with a single target:
+
 ```kotlin
 javaLibrary {
-    java(21) { 
-        // ...
+    java(21) {
+        dependencies { }
     }
 }
 ```
 
+A KMP library with multiple targets:
+
 ```kotlin
 kotlinLibrary {
-    common { 
-        // ...
-    }
-    jvm(17) {
-        // ...
+    common {
+        dependencies { }
     }
     native { 
         // ...
     }
     macos { 
+        // ...
+    }
+    jvm { 
+        // ...
+    }
+    jvm(17)
+    jvm(21) {
+        // ...
+    }
+    macosX64("14.0") {
         // ...
     }
     macosArm64("14.0") {
@@ -246,6 +319,8 @@ kotlinLibrary {
     }
 }
 ```
+
+A Kotlin/JVM library with a single target:
 
 ```kotlin
 kotlinLibrary {
