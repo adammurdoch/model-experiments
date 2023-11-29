@@ -1,2 +1,2 @@
 # model-experiments
-Some mock up of a potential Gradle software definition model
+Some mock ups of potential Gradle software definition models.
