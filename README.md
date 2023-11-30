@@ -12,26 +12,30 @@ A Java library with multiple targets:
 
 ```kotlin
 javaLibrary {
+    
     // Declare the target Java versions
     javaVersions = listOf(11, 17, 21)
 
     // Configure the targets using various selectors
     targets {
+
+        // Common settings for all targets
         common {
-            // Common settings for all targets
             dependencies {
                 api("xyz")
                 implementation(projects.otherLib)
             }
         }
+
+        // Additional settings for Java 11
         java(11) {
-            // Settings for Java 11
             dependencies {
                 implementation("some-backport")
             }
         }
+
+        // Additional setting for Java 17
         java(17) {
-            // Setting for Java 17
             dependencies {
                 implementation("some-other-backport")
             }
@@ -49,16 +53,19 @@ The same library with the targets defined by a convention:
 ```kotlin
 javaLibrary {
     targets {
+
+        // Common settings for all targets
         common {
-            // Common settings for all targets
             dependencies { }
         }
+
+        // Settings for Java 11
         java(11) {
-            // Settings for Java 11
             dependencies { }
         }
+
+        // Settings for Java 17
         java(17) {
-            // Settings for Java 17
             dependencies { }
         }
 
@@ -95,6 +102,7 @@ A Kotlin library with multiple targets:
 
 ```kotlin
 kotlinLibrary {
+
     // Declare the Kotlin targets 
     kotlinTargets = listOf(
         jvm(17),
@@ -108,21 +116,30 @@ kotlinLibrary {
 
     // Configure the targets using various selectors
     targets {
+
+        // Common settings for all targets
         common {
-            // Common settings for all targets
             dependencies { 
                 api("xyz")
             }
         }
+
+        // Common settings for all native targets
         native {
-            // Common settings for all native targets
+            dependencies { }
         }
+
+        // Common settings for all macOS targets
         macos {
-            // Common settings for all macOS targets
+            dependencies { }
         }
+
+        // Common settings for all JVM targets
         jvm {
-            // Common settings for all JVM targets
+            dependencies { }
         }
+
+        // Settings for Java 21
         jvm(21) {
             // Settings for Java 21
         }
@@ -136,6 +153,7 @@ A Kotlin/JVM library:
 
 ```kotlin
 kotlinLibrary {
+    
     kotlinTargets = listOf(jvm(21))
     
     targets {
@@ -158,26 +176,31 @@ A Java library with multiple targets:
 ```kotlin
 javaLibrary {
     targets {
+
+        // Common settings for all targets
         common {
-            // Common settings for all targets
             dependencies {
                 api("xyz")
                 implementation(projects.otherLib)
             }
         }
+
+        // Declares Java 11 as a target
         java(11) {
-            // Declares Java 11 as a target
             dependencies {
                 implementation("some-backport")
             }
         }
+
+        // Declares Java 17 as a target            
         java(17) {
-            // Declares Java 17 as a target            
             dependencies {
                 implementation("some-other-backport")
             }
         }
-        java(21) // Declares Java 21 as a target, with no additional configuration
+
+        // Declares Java 21 as a target, with no additional configuration
+        java(21) 
     }
 }
 ```
@@ -204,39 +227,53 @@ A KMP library:
 ```kotlin
 kotlinLibrary {
     targets {
+
+        // Common settings for all targets
         common {
-            // Common settings for all targets
             dependencies { 
                 api("xyz")
             }
         }
+        // Common settings for native targets
         native {
-            // Common settings for native targets
+            dependencies { }
         }
+
+        // Common settings for macOS targets
         macos {
-            // Common settings for macOS targets
+            dependencies { }
         }
+
+        // Common settings for all JVM targets
         jvm {
-            // Common settings for all JVM targets
+            dependencies { }
         }
-        jvm(17) // Declares Java 17 as a target with no additional configuration
+
+        // Declares Java 17 as a target with no additional configuration
+        jvm(17)
+
+        // Declares Java 21 as a target
         jvm(21) {
-            // Declares Java 21 as a target
         }
+
+        // Declares macOS 14.0 + intel as a target
         macOsX64("14.0") { 
-            // Declares macOS 14.0 + intel as a target
         }
+
+        // Declares macOS 14.0 + Apple Silicon as a target
         macOsArm64("14.0") { 
-            // Declares macOS 14.0 + Apple Silicon as a target
         }
+
+        // Declares Android 21 as a target
         android(21) {
-            // Declares Android 21 as a target
         }
+
+        // Declares Android 24 as a target
         android(24) {
-            // Declares Android 24 as a target
         }
+
+        // Declares WASM 1.1 on the browser as a target
         wasm("1.1") {
-            // Declares WASM 1.1 on the browser as a target
         }
     }
 }
@@ -295,28 +332,22 @@ kotlinLibrary {
     common {
         dependencies { }
     }
-    native { 
-        // ...
+    native {
+        dependencies { }
     }
-    macos { 
-        // ...
+    macos {
+        dependencies { }
     }
-    jvm { 
-        // ...
+    jvm {
+        dependencies { }
     }
     jvm(17)
     jvm(21) {
-        // ...
+        dependencies { }
     }
-    macosX64("14.0") {
-        // ...
-    }
-    macosArm64("14.0") {
-        // ...
-    }
-    android(24) {
-        // ...
-    }
+    macosX64("14.0")
+    macosArm64("14.0")
+    android(24)
 }
 ```
 
@@ -325,7 +356,7 @@ A Kotlin/JVM library with a single target:
 ```kotlin
 kotlinLibrary {
     jvm(17) {
-        // ...
+        dependencies { }
     }
 }
 ```
