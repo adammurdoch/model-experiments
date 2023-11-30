@@ -2,9 +2,11 @@
 
 Some mock-ups of potential Gradle software definition models.
 
-There are two basic patterns:
-1. Targets are explicitly declared first and then configured separately
-2. Declaration and configuration are combined
+One of the main questions to answer is how to structure the model for software with multiple targets.
+Below, there are two basic patterns:
+
+1. Targets are explicitly declared first and then separately configured using various selectors.
+2. Declaration and configuration are combined into a single block
 
 ## Pattern 1: Separate declaration and configuration
 
@@ -48,23 +50,28 @@ javaLibrary {
 }
 ```
 
-The same library with the targets defined by a convention:
+Selectors would be applied in a fixed order, and this might also be enforced in the grammar so that this is more explicit.
+
+Here is the same library with conventions applied:
 
 ```kotlin
 javaLibrary {
+    
+    // Targets are already defined by the convention.
+    // Potentially they could be overridden here
+    
     targets {
 
-        // Common settings for all targets
-        common {
-            dependencies { }
-        }
+        // Common settings are already defined by the convention.
+        // Potentially some project-specific conventions could be added here
+        // common { }
 
-        // Settings for Java 11
+        // Additional settings for Java 11
         java(11) {
             dependencies { }
         }
 
-        // Settings for Java 17
+        // Additional settings for Java 17
         java(17) {
             dependencies { }
         }
@@ -84,13 +91,13 @@ javaLibrary {
     javaVersions = listOf(17)
     
     targets {
-        common {
-            // What does this mean? Should it be an error?
-            dependencies { }
-        }
+        // Should common { } be allowed in this case?
+
+        // Settings for Java 17
         java(17) {
-            // Or should this one be an error?
-            dependencies { }
+            dependencies {
+                api("xyz")
+            }
         }
         
         // Using `java(20) { }` here would be an error as this is not declared as a target
@@ -102,6 +109,11 @@ A Kotlin library with multiple targets:
 
 ```kotlin
 kotlinLibrary {
+    
+    // Declare the target Kotlin versions
+    // There could potentially be multiple versions (for example when we're building a Gradle plugin for different Gradle versions)
+    // Keep this simple for now, to be explored later
+    kotlinVersion = "1.9.21"
 
     // Declare the Kotlin targets 
     kotlinTargets = listOf(
@@ -124,24 +136,24 @@ kotlinLibrary {
             }
         }
 
-        // Common settings for all native targets
+        // Additional settings for all native targets
         native {
             dependencies { }
         }
 
-        // Common settings for all macOS targets
+        // Additional settings for all macOS targets
         macos {
             dependencies { }
         }
 
-        // Common settings for all JVM targets
+        // Additional settings for all JVM targets
         jvm {
             dependencies { }
         }
 
-        // Settings for Java 21
+        // Additional settings for Java 21
         jvm(21) {
-            // Settings for Java 21
+            dependencies { }
         }
         
         // No additional configuration for the other targets
@@ -153,14 +165,13 @@ A Kotlin/JVM library:
 
 ```kotlin
 kotlinLibrary {
-    
+
+    kotlinVersion = "1.9.21"
     kotlinTargets = listOf(jvm(21))
     
     targets {
-        common {
-            // What does this mean? Should it be an error?
-            dependencies { }
-        }
+        // Allow common { }?
+        
         jvm(21) {
             // Or should this one be an error?
             dependencies { }
@@ -210,12 +221,10 @@ A Java library with one target
 ```kotlin
 javaLibrary {
     targets {
-        common {
-            // What does this mean? Should it be an error?
-            dependencies { }
-        }
+        // Allow common { }?
+
+        // Declares Java 17 as a target and configures it
         java(17) {
-            // Declares Java 17 as a target and configures it
             dependencies { }
         }
     }
@@ -228,23 +237,26 @@ A KMP library:
 kotlinLibrary {
     targets {
 
+        kotlinVersion = "1.9.21"
+
         // Common settings for all targets
         common {
             dependencies { 
                 api("xyz")
             }
         }
-        // Common settings for native targets
+
+        // Additional settings for native targets
         native {
             dependencies { }
         }
 
-        // Common settings for macOS targets
+        // Additional settings for macOS targets
         macos {
             dependencies { }
         }
 
-        // Common settings for all JVM targets
+        // Additional settings for all JVM targets
         jvm {
             dependencies { }
         }
@@ -254,27 +266,23 @@ kotlinLibrary {
 
         // Declares Java 21 as a target
         jvm(21) {
+            dependencies { }
         }
 
         // Declares macOS 14.0 + intel as a target
-        macOsX64("14.0") { 
-        }
+        macOsX64("14.0")
 
         // Declares macOS 14.0 + Apple Silicon as a target
-        macOsArm64("14.0") { 
-        }
-
+        macOsArm64("14.0")
+        
         // Declares Android 21 as a target
-        android(21) {
-        }
+        android(21)
 
         // Declares Android 24 as a target
-        android(24) {
-        }
+        android(24)
 
         // Declares WASM 1.1 on the browser as a target
-        wasm("1.1") {
-        }
+        wasm("1.1")
     }
 }
 ```
@@ -283,13 +291,12 @@ A JVM Kotlin library:
 
 ```kotlin
 kotlinLibrary {
+    kotlinVersion = "1.9.21"
+
     targets {
-        common {
-            // What does this mean? Should it be an error?
-            dependencies { }
-        }
+        // Allow common { }?
+
         jvm(21) {
-            // Or should this one be an error?
             dependencies { }
         }
     }
@@ -298,7 +305,7 @@ kotlinLibrary {
 
 ### Variation: remove Gradle specific concept 'target'
 
-Inline the `targets` block, as it doesn't have much meaning for developers:
+With this pattern, we could inline the `targets` block, as it doesn't have much meaning for developers:
 
 A Java library with multiple targets:
 
@@ -329,6 +336,7 @@ A KMP library with multiple targets:
 
 ```kotlin
 kotlinLibrary {
+    kotlinVersion = "1.9.21"
     common {
         dependencies { }
     }
@@ -355,6 +363,7 @@ A Kotlin/JVM library with a single target:
 
 ```kotlin
 kotlinLibrary {
+    kotlinVersion = "1.9.21"
     jvm(17) {
         dependencies { }
     }
