@@ -112,9 +112,9 @@ A Kotlin library with multiple targets:
 ```kotlin
 kotlinLibrary {
     
-    // Declare the target Kotlin versions
+    // Declare the target Kotlin version.
     // There could potentially be multiple versions (for example when we're building a Gradle plugin for different Gradle versions)
-    // Keep this simple for now, to be explored later
+    // Keep this simple for now. Dealing with multiple dimensions will be explored later.
     kotlinVersion = "1.9.21"
 
     // Declare the Kotlin targets 
