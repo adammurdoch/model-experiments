@@ -3,10 +3,10 @@
 Some mock-ups of potential Gradle software definition models.
 
 One of the main questions to answer is how to structure the model for software with multiple targets.
-Below, there are two basic patterns:
+The following examples look at two basic patterns:
 
 1. Targets are explicitly declared first and then separately configured using various selectors.
-2. Declaration and configuration are combined into a single block
+2. Declaration and configuration are combined into a single block.
 
 ## Pattern 1: Separate declaration and configuration
 
@@ -51,6 +51,8 @@ javaLibrary {
 ```
 
 Selectors would be applied in a fixed order, and this might also be enforced in the grammar so that this is more explicit.
+
+It would be an error to use a selector that does not match anything.
 
 Here is the same library with conventions applied:
 
@@ -186,6 +188,8 @@ A Java library with multiple targets:
 
 ```kotlin
 javaLibrary {
+    
+    // The targets and selectors are combined in this block
     targets {
 
         // Common settings for all targets
@@ -216,12 +220,16 @@ javaLibrary {
 }
 ```
 
+As for the previous pattern, the selectors would be applied in a fixed order, and this might also be enforced in the grammar.
+
+It would be an error to use a selector that does not match anything.
+
 A Java library with one target
 
 ```kotlin
 javaLibrary {
     targets {
-        // Allow common { }?
+        // Maybe common { }?
 
         // Declares Java 17 as a target and configures it
         java(17) {
