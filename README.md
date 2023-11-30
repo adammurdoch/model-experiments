@@ -319,9 +319,12 @@ A Java library with multiple targets:
 
 ```kotlin
 javaLibrary {
+    // Common settings for all targets
     common {
         dependencies { }
     }
+    
+    // Define targets and additional configuration
     java(11) {
         dependencies { }
     }
@@ -334,6 +337,7 @@ A Java library with a single target:
 
 ```kotlin
 javaLibrary {
+    // Define target and configuration
     java(21) {
         dependencies { }
     }
@@ -344,10 +348,13 @@ A KMP library with multiple targets:
 
 ```kotlin
 kotlinLibrary {
+    // Common settings for all targets
     kotlinVersion = "1.9.21"
     common {
         dependencies { }
     }
+    
+    // Targets and selectors
     native {
         dependencies { }
     }
@@ -418,6 +425,7 @@ kotlinLibrary {
     kotlinVersion = "1.9.21"
     dependencies { }
 
+    // Targets and selectors
     native {
         dependencies { }
     }
