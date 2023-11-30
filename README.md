@@ -311,9 +311,9 @@ kotlinLibrary {
 }
 ```
 
-### Variation: remove Gradle specific concept 'target'
+### Pattern 2 Variation 2: Don't require Gradle specific concept 'target'
 
-With this pattern, we could inline the `targets` block, as it doesn't have much meaning for developers:
+With pattern 2, we could inline the `targets` block, as it doesn't have much meaning for developers:
 
 A Java library with multiple targets:
 
@@ -375,5 +375,75 @@ kotlinLibrary {
     jvm(17) {
         dependencies { }
     }
+}
+```
+
+### Pattern 2 Variation 3: Don't require Gradle specific concept 'common'
+
+In the previous variation, the `common { }` block could be inlined, as this can be implied.
+
+A Java library with multiple targets:
+
+```kotlin
+javaLibrary {
+    // Dependencies for all targets
+    dependencies { }
+    
+    // Declare targets
+    java(11) {
+        dependencies { }
+    }
+    java(17)
+    java(21)
+}
+```
+
+A Java library with a single target:
+
+```kotlin
+javaLibrary {
+    // Dependencies for all targets
+    dependencies { }
+
+    // Declare target
+    java(21)
+}
+```
+
+A KMP library with multiple targets:
+
+```kotlin
+kotlinLibrary {
+    // Settings for all targets
+    kotlinVersion = "1.9.21"
+    dependencies { }
+
+    native {
+        dependencies { }
+    }
+    macos {
+        dependencies { }
+    }
+    jvm {
+        dependencies { }
+    }
+
+    jvm(17)
+    jvm(21) {
+        dependencies { }
+    }
+    macosX64("14.0")
+    macosArm64("14.0")
+    android(24)
+}
+```
+
+A Kotlin/JVM library with a single target:
+
+```kotlin
+kotlinLibrary {
+    kotlinVersion = "1.9.21"
+    dependencies { }
+    jvm(17)
 }
 ```
