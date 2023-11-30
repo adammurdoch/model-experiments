@@ -387,7 +387,8 @@ kotlinLibrary {
 
 ### Pattern 2 Variation 3: Don't require Gradle specific concept 'common'
 
-In the previous variation, the `common { }` block could be inlined, as this can be implied.
+In the previous variation, the `common { }` block could be inlined, as the "common" nature of the settings is implied by making them
+top level.
 
 A Java library with multiple targets:
 
