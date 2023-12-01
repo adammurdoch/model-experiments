@@ -1,6 +1,7 @@
 # Software with multiple targets
 
-One important question is how to structure the model for software with multiple targets.
+Almost all types of software, even JVM software, can have multiple targets.
+For some software such as Android, Kotlin multiplatform or C++ this is a fundamental aspect of the ecosystem.
 
 The following examples look at two basic patterns:
 
@@ -225,8 +226,8 @@ for example, this is unnecessary complexity.
 
 Some potential options:
 
-1. Provide 2 different ways to define the targets that the developer can choose between, for example using `javaVersion = 21` instead of `javaVersions = listOf(21)`
-2. Provide different types: one that supports a single target and offers a simplified view, and one that supports multiple targets.
+1. Provide two different ways to define the targets that the developer can choose between, for example using `javaVersion = 21` instead of `javaVersions = listOf(21)`
+2. Provide different types: one that supports a single target, and one that supports multiple targets. See [here](multiple-targets.md#templates) for examples.
 
 ## Pattern 2: Combined declaration and configuration
 

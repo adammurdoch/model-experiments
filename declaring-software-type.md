@@ -15,6 +15,7 @@ These are all important decisions for a developer to make, so they should be abl
 However, not every combination makes sense, some aspects are implied by other aspects, and there are common patterns that can be used by developers who don't want to define all of
 these aspects. As a result, we shouldn't force developers to answer each of these questions separately unless they need to.
 
+<a id="templates"></a>
 ## Pattern 1: Named template
 
 One option is to give a name to a pattern or template, where the template provides fixed values for these aspects and allows the developer to declare other aspects.
