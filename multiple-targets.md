@@ -1,6 +1,7 @@
 # Software with multiple targets
 
-One important question is how to structure the model for software with multiple targets.
+Almost all types of software, even JVM software, can have multiple targets.
+For some software such as Android, Kotlin multiplatform or C++ this is a fundamental aspect of the ecosystem.
 
 The following examples look at two basic patterns:
 
@@ -9,11 +10,49 @@ The following examples look at two basic patterns:
 
 ## Pattern 1: Separate declaration and configuration
 
+The general pattern is:
+
+```kotlin
+someType {
+
+    // Declare the set of targets
+    myTargets = listOf(target1, target2)
+
+    // Configure the targets using various selectors
+    targets {
+
+        // Common settings for all targets
+        common {
+            // ..
+        }
+
+        // Additional settings for all targets that match the selector
+        someSelector {
+            // ..
+        }
+
+        // Additional settings for all targets that match the selector
+        someOtherSelector(param) {
+            // ..
+        }
+
+        // Additional settings for target1
+        target1 {
+            // ..
+        }
+    }
+}
+```
+
+Selectors would be applied in a fixed order. This might also be enforced in the grammar so that the ordering is more explicit.
+
+It would be an error to use a selector that does not match anything.
+
 **Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
-    
+
     // Declare the target Java versions
     javaVersions = listOf(11, 17, 21)
 
@@ -43,24 +82,20 @@ javaLibrary {
         }
 
         // No additional settings for Java 21
-        
+
         // Using `java(20) { }` here would be an error as Java 20 is not declared as a target
     }
 }
 ```
 
-Selectors would be applied in a fixed order, and this might also be enforced in the grammar so that this is more explicit.
-
-It would be an error to use a selector that does not match anything.
-
 Here is the same library with conventions applied:
 
 ```kotlin
 javaLibrary {
-    
+
     // Targets are already defined by the convention.
     // Potentially they could be overridden here
-    
+
     targets {
 
         // Common settings are already defined by the convention.
@@ -86,13 +121,14 @@ javaLibrary {
 
 **Java library with one target**
 
-This is the most common scenario by far, and where developers will start.
+This is the most common scenario by far, and where many developers will start.
 
 ```kotlin
 javaLibrary {
+
     // Declare the target Java versions
     javaVersions = listOf(17)
-    
+
     targets {
         // Should common { } be allowed in this case?
 
@@ -102,7 +138,7 @@ javaLibrary {
                 api("xyz")
             }
         }
-        
+
         // Using `java(20) { }` here would be an error as this is not declared as a target
     }
 }
@@ -112,7 +148,7 @@ javaLibrary {
 
 ```kotlin
 kotlinLibrary {
-    
+
     // Declare the target Kotlin version.
     // There could potentially be multiple versions (for example when we're building a Gradle plugin for different Gradle versions)
     // Keep this simple for now. Dealing with multiple dimensions will be explored later.
@@ -134,7 +170,7 @@ kotlinLibrary {
 
         // Common settings for all targets
         common {
-            dependencies { 
+            dependencies {
                 api("xyz")
             }
         }
@@ -158,7 +194,7 @@ kotlinLibrary {
         jvm(21) {
             dependencies { }
         }
-        
+
         // No additional configuration for the other targets
     }
 }
@@ -171,10 +207,10 @@ kotlinLibrary {
 
     kotlinVersion = "1.9.21"
     kotlinTargets = listOf(jvm(21))
-    
+
     targets {
         // Allow common { }?
-        
+
         jvm(21) {
             // Or should this one be an error?
             dependencies { }
@@ -183,13 +219,63 @@ kotlinLibrary {
 }
 ```
 
+### Simplifying the single target case
+
+The examples above allow the developer to write software with multiple targets, but also forces the developer to understand this concept. For many developers working with the JVM,
+for example, this is unnecessary complexity.
+
+Some potential options:
+
+1. Provide two different ways to define the targets that the developer can choose between, for example using `javaVersion = 21` instead of `javaVersions = listOf(21)`
+2. Provide different types: one that supports a single target, and one that supports multiple targets. See [here](declaring-software-type.md#pattern-1-named-template) for examples.
+
 ## Pattern 2: Combined declaration and configuration
+
+The general pattern is:
+
+```kotlin
+someType {
+
+    // Declare and configure the targets using various selectors
+    targets {
+
+        // Common settings for all targets
+        common {
+            // ..
+        }
+
+        // Additional settings for all targets that match the selector
+        someSelector {
+            // ..
+        }
+
+        // Additional settings for all targets that match the selector
+        someOtherSelector(param) {
+            // ..
+        }
+
+        // Declares a target and its additional settings
+        someTarget1 {
+            // ..
+        }
+
+        // Declares a target and its additional settings
+        someTarget2 {
+            // ..
+        }
+    }
+}
+```
+
+As for the previous pattern, the selectors would be applied in a fixed order and this might also be enforced in the grammar.
+
+It would be an error to use a selector that does not match anything.
 
 **Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
-    
+
     // The targets and selectors are combined in this block
     targets {
 
@@ -216,14 +302,10 @@ javaLibrary {
         }
 
         // Declares Java 21 as a target, with no additional configuration
-        java(21) 
+        java(21)
     }
 }
 ```
-
-As for the previous pattern, the selectors would be applied in a fixed order, and this might also be enforced in the grammar.
-
-It would be an error to use a selector that does not match anything.
 
 **Java library with one target**
 
@@ -250,7 +332,7 @@ kotlinLibrary {
 
         // Common settings for all targets
         common {
-            dependencies { 
+            dependencies {
                 api("xyz")
             }
         }
@@ -283,7 +365,7 @@ kotlinLibrary {
 
         // Declares macOS 14.0 + Apple Silicon as a target
         macOsArm64("14.0")
-        
+
         // Declares Android 21 as a target
         android(21)
 
@@ -324,7 +406,7 @@ javaLibrary {
     common {
         dependencies { }
     }
-    
+
     // Define targets and additional configuration
     java(11) {
         dependencies { }
@@ -354,7 +436,7 @@ kotlinLibrary {
     common {
         dependencies { }
     }
-    
+
     // Targets and selectors
     native {
         dependencies { }
@@ -397,7 +479,7 @@ top level.
 javaLibrary {
     // Dependencies for all targets
     dependencies { }
-    
+
     // Declare targets
     java(11) {
         dependencies { }
