@@ -9,7 +9,7 @@ The following examples look at two basic patterns:
 
 ## Pattern 1: Separate declaration and configuration
 
-A Java library with multiple targets:
+**Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
@@ -84,7 +84,9 @@ javaLibrary {
 }
 ```
 
-A Java library with one target. This is the most common scenario by far, and where developers will start.
+**Java library with one target**
+
+This is the most common scenario by far, and where developers will start.
 
 ```kotlin
 javaLibrary {
@@ -106,7 +108,7 @@ javaLibrary {
 }
 ```
 
-A Kotlin library with multiple targets:
+**Kotlin library with multiple targets**
 
 ```kotlin
 kotlinLibrary {
@@ -162,7 +164,7 @@ kotlinLibrary {
 }
 ```
 
-A Kotlin/JVM library:
+**Kotlin/JVM library**
 
 ```kotlin
 kotlinLibrary {
@@ -183,7 +185,7 @@ kotlinLibrary {
 
 ## Pattern 2: Combined declaration and configuration
 
-A Java library with multiple targets:
+**Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
@@ -223,7 +225,7 @@ As for the previous pattern, the selectors would be applied in a fixed order, an
 
 It would be an error to use a selector that does not match anything.
 
-A Java library with one target
+**Java library with one target**
 
 ```kotlin
 javaLibrary {
@@ -238,7 +240,7 @@ javaLibrary {
 }
 ```
 
-A KMP library:
+**KMP library**
 
 ```kotlin
 kotlinLibrary {
@@ -294,7 +296,7 @@ kotlinLibrary {
 }
 ```
 
-A JVM Kotlin library:
+**JVM Kotlin library**
 
 ```kotlin
 kotlinLibrary {
@@ -314,7 +316,7 @@ kotlinLibrary {
 
 With pattern 2, we could inline the `targets` block, as it doesn't have much meaning for developers:
 
-A Java library with multiple targets:
+**Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
@@ -332,7 +334,7 @@ javaLibrary {
 }
 ```
 
-A Java library with a single target:
+**Java library with a single target**
 
 ```kotlin
 javaLibrary {
@@ -343,7 +345,7 @@ javaLibrary {
 }
 ```
 
-A KMP library with multiple targets:
+**KMP library with multiple targets**
 
 ```kotlin
 kotlinLibrary {
@@ -373,7 +375,7 @@ kotlinLibrary {
 }
 ```
 
-A Kotlin/JVM library with a single target:
+**Kotlin/JVM library with a single target**
 
 ```kotlin
 kotlinLibrary {
@@ -389,7 +391,7 @@ kotlinLibrary {
 In the previous variation, the `common { }` block could be inlined, as the "common" nature of the settings is implied by making them
 top level.
 
-A Java library with multiple targets:
+**Java library with multiple targets**
 
 ```kotlin
 javaLibrary {
@@ -405,7 +407,7 @@ javaLibrary {
 }
 ```
 
-A Java library with a single target:
+**Java library with a single target**
 
 ```kotlin
 javaLibrary {
@@ -417,7 +419,7 @@ javaLibrary {
 }
 ```
 
-A KMP library with multiple targets:
+**KMP library with multiple targets**
 
 ```kotlin
 kotlinLibrary {
@@ -446,7 +448,7 @@ kotlinLibrary {
 }
 ```
 
-A Kotlin/JVM library with a single target:
+**Kotlin/JVM library with a single target**
 
 ```kotlin
 kotlinLibrary {
