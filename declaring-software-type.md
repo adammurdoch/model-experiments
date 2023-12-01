@@ -11,20 +11,21 @@ There are several different aspects that make up the "type" of software produced
     - Which source languages does the implementation use?
     - Which version or versions of these languages does it use?
 
-These are all important decisions for a developer to make, so they should be able to define these different aspects somewhat separately.
+These are all important decisions for a developer to make, so they should be able to declare these different aspects somewhat separately.
 However, not every combination makes sense, some aspects are implied by other aspects, and there are common patterns that can be used by developers who don't want to define all of
-these aspects. As a result, we shouldn't force developers to answer each of these questions separately unless they need to.
+these aspects.
 
-<a id="templates"></a>
+As a result, the model shouldn't force developers to answer all of these questions unless they need to.
+
 ## Pattern 1: Named template
 
-One option is to give a name to a pattern or template, where the template provides fixed values for these aspects and allows the developer to declare other aspects.
+One option is to give a name to each pattern or "template". The template would provide fixed values for some of these aspects and allow the developer to declare other aspects.
 
 Here are some examples of what this might look like:
 
 **A Java library**: a library implemented using a single version of Java.
 
-The developer defines the Java version, and this also implies the JVM version that the library will run on.
+The developer declares the Java version, and this also implies the JVM version that the library will run on.
 
 ```kotlin
 javaLibrary {
@@ -35,7 +36,7 @@ javaLibrary {
 
 **A Kotlin JVM library**: a library implemented using a single version of Kotlin and that runs on a single version of the JVM.
 
-The developer defines these versions.
+The developer declares the Kotlin and JVM versions.
 
 ```kotlin
 kotlinJvmLibrary {
@@ -47,20 +48,20 @@ kotlinJvmLibrary {
 
 **A Kotlin mobile library**: a library implemented using a single version of Kotlin and that runs on Android and iOS devices.
 
-The developer defines the versions of those devices.
+The developer declares the target version of the devices.
 
 ```kotlin
 kotlinMobileLibrary {
     kotlinVersion = "1.9.21"
     androidVersion = 21
-    iOSVersion = "12.0"
+    iOSVersion = "14.0"
     // other settings
 }
 ```
 
 **A Kotlin multiplatform library**: a library implemented using a single version of Kotlin and that runs on one or more targets.
 
-The developer defines the Kotlin version and the targets.
+The developer declares the Kotlin version and the targets and their versions.
 
 ```kotlin
 kotlinLibrary {
@@ -75,9 +76,9 @@ kotlinLibrary {
 }
 ```
 
-**A Gradle worker library**: a library that runs in the Gradle worker processes.
+**A Gradle worker library**: a library that runs in the Gradle worker processes and implemented using Java 8.
 
-It is implemented using Java 8 and the developer does not define anything further.
+The developer does not declare anything further about the software type.
 
 ```kotlin
 workerLibrary {
@@ -87,10 +88,12 @@ workerLibrary {
 
 **A JVM library**: a generic library that runs on the JVM.
 
-The developer defines the implementation languages and target JVM versions.
+The developer declares the implementation languages and target JVM versions.
+
+For example, the following library is implemented in Kotlin 1.9.20 and Java 17 and runs on the Java 17 and 21 JVMs: 
 
 ```kotlin
-library {
+jvmLibrary {
     languages {
         kotlin("1.9.20")
         java(17)
