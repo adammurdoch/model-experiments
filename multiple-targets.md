@@ -227,7 +227,7 @@ for example, this is unnecessary complexity.
 Some potential options:
 
 1. Provide two different ways to define the targets that the developer can choose between, for example using `javaVersion = 21` instead of `javaVersions = listOf(21)`
-2. Provide different types: one that supports a single target, and one that supports multiple targets. See [here](multiple-targets.md#templates) for examples.
+2. Provide different types: one that supports a single target, and one that supports multiple targets. See [here](declaring-software-type.md#templates) for examples.
 
 ## Pattern 2: Combined declaration and configuration
 

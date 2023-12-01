@@ -8,7 +8,7 @@ There are two main questions these mock-ups attempt to answer:
 
 **How does a developer declare what kind of software a project produces?**
 
-See [Declaring software type](declaring-software-type.md)
+See [Declaring the software type](declaring-software-type.md)
 
 **How does a developer work with software that has multiple targets?**
 
