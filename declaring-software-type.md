@@ -1,6 +1,6 @@
 # Declaring the software type
 
-There are several different aspects that make up the "type" of software produced by a project:
+The "type" of software produced by a project is made up of several aspects:
 
 - How is the software intended to be used?
     - Is it a CLI application? A web app? A network service? A library? A Gradle plugin?
@@ -12,20 +12,23 @@ There are several different aspects that make up the "type" of software produced
     - Which version or versions of these languages does it use?
 
 These are all important decisions for a developer to make, so they should be able to declare these different aspects somewhat separately.
-However, not every combination makes sense, some aspects are implied by other aspects, and there are common patterns that can be used by developers who don't want to define all of
-these aspects.
 
-As a result, the model shouldn't force developers to answer all of these questions unless they need to.
+A pattern we could use is to require that the developer explicitly define each of these aspects - for example "this is a CLI application that runs on the Java 21 JVM and is
+implemented using Java 21".
+
+However, some aspects are implied by other aspects, not every combination of values makes sense, and there are common patterns that can be used to simplify the model for developers
+who don't want to define all of these aspects. As a result, the model shouldn't force developers to answer all of these questions unless they need to.
 
 ## Pattern 1: Named template
 
-One option is to give a name to each pattern or "template". The template would provide fixed values for some of these aspects and allow the developer to declare other aspects.
+Another option is to give a name to each pattern or "template". The template would provide fixed values for some of these aspects and allow the developer to declare other aspects.
+Some or even all of these declarable aspects can have default values.
 
 Here are some examples of what this might look like:
 
 **A Java library**: a library implemented using a single version of Java.
 
-The developer declares the Java version, and this also implies the JVM version that the library will run on.
+The developer declares the Java version, and this also implies the JVM version that the library targets.
 
 ```kotlin
 javaLibrary {
@@ -34,7 +37,7 @@ javaLibrary {
 }
 ```
 
-**A Kotlin JVM library**: a library implemented using a single version of Kotlin and that runs on a single version of the JVM.
+**A Kotlin JVM library**: a library implemented using a single version of Kotlin and that targets a single version of the JVM.
 
 The developer declares the Kotlin and JVM versions.
 
@@ -53,7 +56,7 @@ The developer declares the target version of the devices.
 ```kotlin
 kotlinMobileLibrary {
     kotlinVersion = "1.9.21"
-    androidVersion = 21
+    androidVersion = "12.0"
     iOSVersion = "14.0"
     // other settings
 }
@@ -61,7 +64,7 @@ kotlinMobileLibrary {
 
 **A Kotlin multiplatform library**: a library implemented using a single version of Kotlin and that runs on one or more targets.
 
-The developer declares the Kotlin version and the targets and their versions.
+The developer declares the Kotlin language version and the targets and their versions.
 
 ```kotlin
 kotlinLibrary {
@@ -69,7 +72,7 @@ kotlinLibrary {
     targets {
         jvm(17)
         browser("ECMAScript 2019")
-        android(24)
+        android("12.0")
         macosArm64("14.0")
     }
     // other settings
@@ -90,7 +93,7 @@ workerLibrary {
 
 The developer declares the implementation languages and target JVM versions.
 
-For example, the following library is implemented in Kotlin 1.9.20 and Java 17 and runs on the Java 17 and 21 JVMs: 
+For example, the following library is implemented in Kotlin 1.9.20 and Java 17 and targets the Java 17 and 21 JVMs:
 
 ```kotlin
 jvmLibrary {
@@ -103,5 +106,19 @@ jvmLibrary {
         jvm(21)
     }
     // other settings
+}
+```
+
+**An Android application**: an application that runs on Android devices.
+
+The developer declares the implementation languages and target Android version.
+
+```kotlin
+androidApplication {
+    androidVersion = "12.0"
+    languages {
+        kotlin("1.9.20")
+        java(17)
+    }
 }
 ```

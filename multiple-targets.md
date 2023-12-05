@@ -160,8 +160,8 @@ kotlinLibrary {
         jvm(21),
         macosX86("14.0"),
         macosArm64("14.0"),
-        android(21),
-        android(24),
+        android("10.0"),
+        android("12.0"),
         wasm("1.1")
     )
 
@@ -366,11 +366,11 @@ kotlinLibrary {
         // Declares macOS 14.0 + Apple Silicon as a target
         macOsArm64("14.0")
 
-        // Declares Android 21 as a target
-        android(21)
+        // Declares Android 12.0 as a target
+        android("12.0")
 
-        // Declares Android 24 as a target
-        android(24)
+        // Declares Android 10.0 as a target
+        android("10.0")
 
         // Declares WASM 1.1 on the browser as a target
         wasm("1.1")
@@ -394,7 +394,31 @@ kotlinLibrary {
 }
 ```
 
-### Pattern 2 Variation 2: Don't require Gradle specific concept 'target'
+**Swift library**
+
+```kotlin
+swiftLibrary {
+    
+    swiftVersion = "5.9"
+    
+    targets {
+        common { 
+        }
+        macos { 
+        }
+        macosArm64("12.0") {
+        }
+        ios("16.0") {
+        }
+        windowsX86(10) {
+        }
+        linuxX86(glibc = "2.38") {
+        }
+    }
+}
+```
+
+### Pattern 2 Variation 2: Don't expose Gradle specific concept 'target'
 
 With pattern 2, we could inline the `targets` block, as it doesn't have much meaning for developers:
 
@@ -468,7 +492,7 @@ kotlinLibrary {
 }
 ```
 
-### Pattern 2 Variation 3: Don't require Gradle specific concept 'common'
+### Pattern 2 Variation 3: Don't expose Gradle specific concept 'common'
 
 In the previous variation, the `common { }` block could be inlined, as the "common" nature of the settings is implied by making them
 top level.
