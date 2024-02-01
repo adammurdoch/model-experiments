@@ -41,10 +41,10 @@ cliApplication {
 ```kotlin
 cliApplication {
     implementation {
-        kotlin("1.9.22") { }
+        kotlin("1.9.22")
     }
     runtime {
-        jvm(21) { }
+        jvm(21)
     }
 }
 ```
@@ -54,11 +54,26 @@ cliApplication {
 ```kotlin
 cliApplication {
     implementation {
-        java(21) { }
-        kotlin("1.9.22") { }
+        java(21)
+        kotlin("1.9.22")
     }
     runtime {
-        jvm(21) { }
+        jvm(21)
+    }
+}
+```
+
+**JVM CLI application implemented using Java and Kotlin and JVM version specific implementations**
+
+```kotlin
+cliApplication {
+    implementation {
+        java(21)
+        kotlin("1.9.22")
+    }
+    runtime {
+        jvm(17)
+        jvm(21)
     }
 }
 ```
@@ -68,13 +83,13 @@ cliApplication {
 ```kotlin
 cliApplication {
     implementation {
-        kotlin("1.9.22") { }
-        swift("5.9") { }
+        kotlin("1.9.22")
+        swift("5.9")
     }
     runtime {
-        macOS("12.0", aarch64) { }
-        macOS("12.0", x64) { }
-        linux(glibc, x64) { }
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
+        linux(glibc, x64)
     }
 }
 ```
@@ -86,12 +101,12 @@ For example, when some specific native code is used for macOS but the JVM is use
 ```kotlin
 cliApplication {
     implementation {
-        kotlin("1.9.22") { }
+        kotlin("1.9.22")
     }
     runtime {
-        jvm(21) { }
-        macOS("12.0", aarch64) { }
-        macOS("12.0", x64) { }
+        jvm(21)
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
     }
 }
 ```
@@ -101,10 +116,10 @@ cliApplication {
 ```kotlin
 mobileApplication {
     implementation {
-        java(21) { }
+        java(21)
     }
     runtime {
-        android(11) { }
+        android("12.0")
     }
 }
 ```
@@ -114,11 +129,26 @@ mobileApplication {
 ```kotlin
 mobileApplication {
     implementation {
-        java(21) { }
-        kotlin("1.9.22") { }
+        java(21)
+        kotlin("1.9.22")
     }
     runtime {
-        android(11) { }
+        android("12.0")
+    }
+}
+```
+
+**Android application implemented using Kotlin, Java and C++**
+
+```kotlin
+mobileApplication {
+    implementation {
+        java(21)
+        kotlin("1.9.22")
+        cpp("c++20")
+    }
+    runtime {
+        android("12.0")
     }
 }
 ```
@@ -128,11 +158,11 @@ mobileApplication {
 ```kotlin
 mobileApplication {
     implementation {
-        kotlin("1.9.22") { }
-        swift("5.9") { }
+        kotlin("1.9.22")
+        swift("5.9")
     }
     runtime {
-        iOS(15) { }
+        iOS("14.0")
     }
 }
 ```
@@ -142,11 +172,11 @@ mobileApplication {
 ```kotlin
 mobileApplication {
     implementation {
-        kotlin("1.9.22") { }
+        kotlin("1.9.22")
     }
     runtime {
-        android(11) { }
-        iOS(15) { }
+        android("12.0")
+        iOS("14.0")
     }
 }
 ```
@@ -156,10 +186,10 @@ mobileApplication {
 ```kotlin
 library {
     implementation {
-        kotlin("1.9.22") { }
+        kotlin("1.9.22")
     }
     runtime {
-        jvm(21) { }
+        jvm(21)
     }
 }
 ```
@@ -169,30 +199,29 @@ library {
 ```kotlin
 library {
     implementation {
-        kotlin("1.9.22") { }
+        kotlin("1.9.22")
     }
     runtime {
-        jvm(21) { }
+        jvm(21)
         browser("ECMAScript 2019")
-        nodeJs() { }
-        macOS("12.0", aarch64) { }
-        macOS("12.0", x64) { }
-        linux(glibc, x64) { }
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
+        linux(glibc, x64)
     }
 }
 ```
 
-This pattern is very flexible. However, not every combination of implementation languages and runtimes makes sense or is supported. It would be good to use a pattern that allows
-the IDE, via a schema, to guide the developer to the valid combinations.
+This pattern is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and runtime (version) makes sense or is
+supported. It would be good to use a pattern that allows the IDE, via a schema, to guide the developer to the valid combinations.
 
-For beginners, the distinction between "implementation" and "runtime" is unnecessary, particularly for Java applications.
+For beginners, the "implementation" and "runtime" concepts are unnecessary, particularly for Java applications.
 
 ## Pattern 2: Named template
 
 Another option is to give a name to each pattern or "template". The template would provide fixed values for some of these aspects and allow the developer to declare other aspects.
 Some or even all of these declarable aspects can have default values.
 
-This pattern is not mutually exclusive to the previous pattern. The following are just ways of expressing the previous in a more constrained way. 
+This pattern is not mutually exclusive to the previous pattern. The following are just ways of expressing the previous in a more constrained way.
 
 Here are some examples of what this might look like:
 
@@ -240,10 +269,11 @@ The developer declares the Kotlin language version and the targets and their ver
 kotlinLibrary {
     kotlinVersion = "1.9.22"
     targets {
-        jvm(17)
+        jvm(21)
         browser("ECMAScript 2019")
         android("12.0")
-        macosArm64("14.0")
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
     }
     // other settings
 }
@@ -268,7 +298,7 @@ For example, the following library is implemented in Kotlin 1.9.20 and Java 17 a
 ```kotlin
 jvmLibrary {
     implementation {
-        kotlin("1.9.20")
+        kotlin("1.9.22")
         java(17)
     }
     runtime {
@@ -287,8 +317,8 @@ The developer declares the implementation languages and target Android version.
 androidApplication {
     androidVersion = "12.0"
     implementation {
-        kotlin("1.9.20")
-        java(17)
+        kotlin("1.9.22")
+        java(21)
     }
 }
 ```
