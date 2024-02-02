@@ -13,21 +13,32 @@ The "type" of software produced by a project is made up of several aspects:
 
 These are all important decisions for a developer to make, so they should be able to declare these different aspects somewhat separately.
 
-## Pattern 1: Declare everything explicitly
+The examples below use several different patterns to define a given software type:
+- Developer declares software usage, implementation languages and target runtimes explicitly
+    - pattern 1a: Using a block to represent the software type with the other details nested. Plugin are not explicitly applied.
+- Developer uses a named template for software type and fills in the missing details, if any
+    - pattern 2a: Using a block to represent the named template
+    - pattern 2b: Using a plugin to represent the named template
 
-A pattern we could use is to require that the developer explicitly define each of these aspects - for example "this is a CLI application that runs on the Java 21 JVM and is
-implemented using Java 21".
+## JVM CLI application implemented using Java
 
-**JVM CLI application implemented using Java**
+**Pattern 1a**
 
 ```kotlin
-// A general purpose CLI application
+
+// Note: no explicit plugin application. This is inferred from the declaration
+
+// A general purpose CLI application type
 cliApplication {
+
+    // Implementation languages
     implementation {
         java(21) {
             // Some Java 21 language settings
         }
     }
+
+    // Target runtimes for the application
     runtime {
         jvm(21) {
             // Some Java 21 runtime settings
@@ -36,7 +47,9 @@ cliApplication {
 }
 ```
 
-**JVM CLI application implemented using Kotlin**
+## JVM CLI application implemented using Kotlin
+
+**Pattern 1a**
 
 ```kotlin
 cliApplication {
@@ -49,7 +62,9 @@ cliApplication {
 }
 ```
 
-**JVM CLI application implemented using Java and Kotlin**
+## JVM CLI application implemented using Java and Kotlin
+
+**Pattern 1a**
 
 ```kotlin
 cliApplication {
@@ -63,7 +78,9 @@ cliApplication {
 }
 ```
 
-**JVM CLI application implemented using Java and Kotlin and JVM version specific implementations**
+## JVM CLI application implemented using Java and Kotlin and JVM version specific implementations
+
+**Pattern 1a**
 
 ```kotlin
 cliApplication {
@@ -78,7 +95,31 @@ cliApplication {
 }
 ```
 
-**Native CLI application implemented using Kotlin and Swift**
+## JVM CLI application implemented using Java with tests implemented in Groovy
+
+**Pattern 1a**
+
+```kotlin
+cliApplication {
+    implementation {
+        java(21)
+    }
+    runtime {
+        jvm(21)
+    }
+    tests {
+        unit {
+            implementation {
+                groovy("5.0")
+            }
+        }
+    }
+}
+```
+
+## Native CLI application implemented using Kotlin and Swift
+
+**Pattern 1a**
 
 ```kotlin
 cliApplication {
@@ -94,7 +135,9 @@ cliApplication {
 }
 ```
 
-**CLI application implemented using Kotlin and packaged as a JVM application and as native executables**
+## CLI application implemented using Kotlin and packaged as a JVM application and as native executables
+
+**Pattern 1a**
 
 For example, when some specific native code is used for macOS but the JVM is used for the other platforms.
 
@@ -111,7 +154,9 @@ cliApplication {
 }
 ```
 
-**Android application implemented using Java**
+## Android application implemented using Java
+
+**Pattern 1a**
 
 ```kotlin
 mobileApplication {
@@ -124,7 +169,9 @@ mobileApplication {
 }
 ```
 
-**Android application implemented using Kotlin and Java**
+## Android application implemented using Kotlin and Java
+
+**Pattern 1a**
 
 ```kotlin
 mobileApplication {
@@ -138,7 +185,9 @@ mobileApplication {
 }
 ```
 
-**Android application implemented using Kotlin, Java and C++**
+## Android application implemented using Kotlin, Java and C++
+
+**Pattern 1a**
 
 ```kotlin
 mobileApplication {
@@ -153,7 +202,9 @@ mobileApplication {
 }
 ```
 
-**iOS application implemented using Kotlin and Swift**
+## iOS application implemented using Kotlin and Swift
+
+**Pattern 1a**
 
 ```kotlin
 mobileApplication {
@@ -167,7 +218,9 @@ mobileApplication {
 }
 ```
 
-**Mobile application implemented using Kotlin that runs on iOS and Android**
+## Mobile application implemented using Kotlin that runs on iOS and Android
+
+**Pattern 1a**
 
 ```kotlin
 mobileApplication {
@@ -181,7 +234,9 @@ mobileApplication {
 }
 ```
 
-**Kotlin library that runs on the JVM**
+## Kotlin library that runs on the JVM
+
+**Pattern 1a**
 
 ```kotlin
 library {
@@ -194,7 +249,9 @@ library {
 }
 ```
 
-**Kotlin library that runs on the JVM and other targets **
+## Kotlin library that runs on the JVM and other targets
+
+**Pattern 1a**
 
 ```kotlin
 library {
