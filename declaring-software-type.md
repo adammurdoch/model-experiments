@@ -74,7 +74,7 @@ cliApplication {
 
 Use a template for a CLI application implemented using a single version of Java.
 
-The developer declares the Java version and this implies the implementation Java version and target JVM version.
+The developer declares the Java version and this implies the Java language version and target JVM version.
 
 ```kotlin
 javaCliApplication {
@@ -128,7 +128,7 @@ cliApplication {
 }
 ```
 
-With a convention to use the JVM as the target runtime when Java is used as an implementation language:
+This can be simplified with a convention for the target JVM version:
 
 ```kotlin
 cliApplication {
@@ -142,13 +142,23 @@ cliApplication {
 
 **Pattern 2a**
 
-## JVM CLI application implemented using Java and Kotlin and JVM version specific implementations
+Use a template for a CLI application that is implemented using Java and Kotlin
+
+```kotlin
+kotlinAndJavaCliApplication {
+    javaVersion = 21
+    kotlinVersion = "1.9.22"
+}
+```
+
+## JVM CLI application implemented using Java and Kotlin with JVM-specific code
 
 **Pattern 1a**
 
 ```kotlin
 cliApplication {
     implementation {
+        java(17)
         java(21)
         kotlin("1.9.22")
     }
@@ -158,6 +168,10 @@ cliApplication {
     }
 }
 ```
+
+**Pattern 2a**
+
+This will look roughly the same as the above.
 
 ## JVM CLI application implemented using Java with tests implemented in Groovy
 
@@ -181,6 +195,19 @@ cliApplication {
 }
 ```
 
+**Pattern 2a**
+
+Use a template for a Java CLI application with Groovy tests:
+
+```kotlin
+javaCliApplicationWithGroovyTests {
+    javaVersion = 21
+    tests {
+        groovyVersion = "5.0"
+    }
+}
+```
+
 ## Native CLI application implemented using Kotlin and Swift
 
 **Pattern 1a**
@@ -198,6 +225,10 @@ cliApplication {
     }
 }
 ```
+
+**Pattern 2a**
+
+Use a template for a generic native CLI application
 
 ## CLI application implemented using Kotlin and packaged as a JVM application and as native executables
 
@@ -298,7 +329,7 @@ mobileApplication {
 }
 ```
 
-## Kotlin library that runs on the JVM
+## Library implemented using Kotlin that runs on the JVM
 
 **Pattern 1a**
 
@@ -313,7 +344,7 @@ library {
 }
 ```
 
-## Kotlin library that runs on the JVM and other targets
+## Library implemented using Kotlin runs on the JVM and other targets
 
 **Pattern 1a**
 
@@ -329,6 +360,18 @@ library {
         macOS("12.0", x64)
         linux(glibc, x64)
     }
+}
+```
+
+## Gradle worker library
+
+A library that runs in the Gradle worker processes and implemented using Java 8.
+
+**Pattern 2a**
+
+```kotlin
+workerLibrary {
+    // other settings
 }
 ```
 
@@ -362,36 +405,6 @@ kotlinLibrary {
         android("12.0")
         macOS("12.0", aarch64)
         macOS("12.0", x64)
-    }
-    // other settings
-}
-```
-
-**A Gradle worker library**: a library that runs in the Gradle worker processes and implemented using Java 8.
-
-The developer does not declare anything further about the software type.
-
-```kotlin
-workerLibrary {
-    // other settings
-}
-```
-
-**A JVM library**: a generic library that runs on the JVM.
-
-The developer declares the implementation languages and target JVM versions.
-
-For example, the following library is implemented in Kotlin 1.9.20 and Java 17 and targets the Java 17 and 21 JVMs:
-
-```kotlin
-jvmLibrary {
-    implementation {
-        kotlin("1.9.22")
-        java(17)
-    }
-    runtime {
-        jvm(17)
-        jvm(21)
     }
     // other settings
 }
