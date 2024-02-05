@@ -14,11 +14,22 @@ The "type" of software produced by a project is made up of several aspects:
 These are all important decisions for a developer to make, so they should be able to declare these different aspects somewhat separately.
 
 The examples below use several different patterns to define a given software type:
-- Developer declares software usage, implementation languages and target runtimes explicitly
-    - pattern 1a: Using a block to represent the software type with the other details nested. Plugin are not explicitly applied.
-- Developer uses a named template for software type and fills in the missing details, if any
-    - pattern 2a: Using a block to represent the named template
-    - pattern 2b: Using a plugin to represent the named template
+
+- Developer declares each aspect explicitly
+    - pattern 1a: Using a block to represent the software usage with the other details nested. Plugin are not explicitly applied.
+- Developer uses a named template and fills in the missing details, if any
+    - pattern 2a: Using a block to represent the named template. Plugin are not explicitly applied.
+
+The template in pattern 2 would provide fixed values for some of the software aspects and allow the developer to declare other aspects. Some or even all of these declarable aspects
+can have default values.
+
+In the examples below, you can see that pattern 1 is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and
+runtime (version) makes sense or is supported. Pattern 2, on the other hand, allows the contents of the block to be strongly typed based on the name of the template.
+
+For beginners, the "implementation" and "runtime" concepts are unnecessary, particularly for Java applications. Pattern 1 exposes these to every developer, whereas pattern 2 allows
+a simplified view.
+
+Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constrained way to express pattern 1
 
 ## JVM CLI application implemented using Java
 
@@ -47,6 +58,31 @@ cliApplication {
 }
 ```
 
+This could be simplified by using a convention for the target runtimes for software components with a Java implementation:
+
+```kotlin
+cliApplication {
+    implementation {
+        java(21)
+    }
+
+    // Use Java 21 as the runtime as well
+}
+```
+
+**Pattern 2a**
+
+Use a template for a CLI application implemented using a single version of Java.
+
+The developer declares the Java version and this implies the implementation Java version and target JVM version.
+
+```kotlin
+javaCliApplication {
+    javaVersion = 21
+    // other settings
+}
+```
+
 ## JVM CLI application implemented using Kotlin
 
 **Pattern 1a**
@@ -59,6 +95,20 @@ cliApplication {
     runtime {
         jvm(21)
     }
+}
+```
+
+**Pattern 2a**
+
+Use a template for a CLI application implemented using a single version of Kotlin and that targets a single version of the JVM.
+
+The developer declares the Kotlin and JVM versions.
+
+```kotlin
+kotlinCliApplication {
+    kotlinVersion = "1.9.22"
+    jvmVersion = 21
+    // other settings
 }
 ```
 
@@ -77,6 +127,20 @@ cliApplication {
     }
 }
 ```
+
+With a convention to use the JVM as the target runtime when Java is used as an implementation language:
+
+```kotlin
+cliApplication {
+    implementation {
+        java(21)
+        kotlin("1.9.22")
+    }
+    // Use Java 21 as the runtime as well
+}
+```
+
+**Pattern 2a**
 
 ## JVM CLI application implemented using Java and Kotlin and JVM version specific implementations
 
@@ -268,42 +332,9 @@ library {
 }
 ```
 
-This pattern is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and runtime (version) makes sense or is
-supported. It would be good to use a pattern that allows the IDE, via a schema, to guide the developer to the valid combinations.
-
-For beginners, the "implementation" and "runtime" concepts are unnecessary, particularly for Java applications.
-
 ## Pattern 2: Named template
 
-Another option is to give a name to each pattern or "template". The template would provide fixed values for some of these aspects and allow the developer to declare other aspects.
-Some or even all of these declarable aspects can have default values.
-
-This pattern is not mutually exclusive to the previous pattern. The following are just ways of expressing the previous in a more constrained way.
-
 Here are some examples of what this might look like:
-
-**A Java library**: a library implemented using a single version of Java.
-
-The developer declares the Java version, and this also implies the JVM version that the library targets.
-
-```kotlin
-javaLibrary {
-    javaVersion = 21
-    // other settings
-}
-```
-
-**A Kotlin JVM library**: a library implemented using a single version of Kotlin and that targets a single version of the JVM.
-
-The developer declares the Kotlin and JVM versions.
-
-```kotlin
-kotlinJvmLibrary {
-    kotlinVersion = "1.9.22"
-    jvmVersion = 21
-    // other settings
-}
-```
 
 **A Kotlin mobile library**: a library implemented using a single version of Kotlin and that runs on Android and iOS devices.
 
