@@ -15,7 +15,7 @@ These are all important decisions for a developer to make, so they should be abl
 
 The examples below use several different patterns to define a given software type:
 
-- Developer declares each aspect explicitly
+- Developer declares each aspect separately
     - pattern 1a: Using a block to represent the software usage with the other details nested. Plugin are not explicitly applied.
 - Developer uses a named template and fills in the missing details, if any
     - pattern 2a: Using a block to represent the named template. Plugin are not explicitly applied.
@@ -42,14 +42,14 @@ Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constraine
 // A general purpose CLI application type
 cliApplication {
 
-    // Implementation languages
+    // Implementation languages. At least one implementation language is required
     implementation {
         java(21) {
             // Some Java 21 language settings
         }
     }
 
-    // Target runtimes for the application
+    // Target runtimes for the application. At least one runtime is required
     runtime {
         jvm(21) {
             // Some Java 21 runtime settings
@@ -77,9 +77,40 @@ Use a template for a CLI application implemented using a single version of Java.
 The developer declares the Java version and this implies the Java language version and target JVM version.
 
 ```kotlin
+
+// Use a named template or "type" 
 javaCliApplication {
+
+    // This is required
     javaVersion = 21
+
     // other settings
+}
+```
+
+This template expands to something like:
+
+```kotlin
+cliApplication {
+    implementation {
+        java($javaVersion)
+    }
+    runtime {
+        jvm($javaVersion)
+    }
+}
+```
+
+We could potentially allow templates to be used at other levels, for example:
+
+```kotlin
+
+// Use the general purpose CLI application type
+cliApplication {
+
+    // This is a template that expands to the above
+    // potentially it cannot be used with the `implementation { }` and `runtime { }` blocks because it already implies these things
+    java(21)
 }
 ```
 
@@ -109,6 +140,18 @@ kotlinCliApplication {
     kotlinVersion = "1.9.22"
     jvmVersion = 21
     // other settings
+}
+```
+
+Or perhaps:
+
+```kotlin
+cliApplication {
+    // This is a template that defines the implementation languages
+    kotlin("1.9.22")
+
+    // This is a template that defines the target runtimes
+    jvm(21)
 }
 ```
 
@@ -151,6 +194,15 @@ kotlinAndJavaCliApplication {
 }
 ```
 
+or perhaps:
+
+```kotlin
+cliApplication {
+    java(21)
+    kotlin("1.9.22")
+}
+```
+
 ## JVM CLI application implemented using Java and Kotlin with JVM-specific code
 
 **Pattern 1a**
@@ -171,7 +223,14 @@ cliApplication {
 
 **Pattern 2a**
 
-This will look roughly the same as the above.
+It's unlikely we'd use a template called something like "javaAndKotlinCliApplicationWithMultipleTargets { }". It's much more likely the template would be called something like
+"fancyProductApplication":
+
+```kotlin
+fancyProductApplication {
+    // All of the above is already implied
+}
+```
 
 ## JVM CLI application implemented using Java with tests implemented in Groovy
 
@@ -190,10 +249,39 @@ cliApplication {
             implementation {
                 groovy("5.0")
             }
+            runtime {
+                jvm(21)
+            }
         }
     }
 }
 ```
+
+Tests could be split out as a separate top-level block:
+
+```kotlin
+cliApplication {
+    implementation {
+        java(21)
+    }
+    runtime {
+        jvm(21)
+    }
+}
+
+tests {
+    unit {
+        implementation {
+            groovy("5.0")
+        }
+        runtime {
+            jvm(21)
+        }
+    }
+}
+```
+
+Conventions for the unit test implementation languages and target runtimes could simplify these.
 
 **Pattern 2a**
 
@@ -204,6 +292,18 @@ javaCliApplicationWithGroovyTests {
     javaVersion = 21
     tests {
         groovyVersion = "5.0"
+    }
+}
+```
+
+or perhaps:
+
+```kotlin
+cliApplication {
+    java(21)
+    tests {
+        // A template that defines the implementation language for all test suites 
+        groovy("5.0")
     }
 }
 ```
@@ -226,9 +326,43 @@ cliApplication {
 }
 ```
 
+This could be simplified using a convention that uses Kotlin's "tier 1" targets:
+
+```kotlin
+cliApplication {
+    implementation {
+        kotlin("1.9.22")
+        swift("5.9")
+    }
+}
+```
+
 **Pattern 2a**
 
-Use a template for a generic native CLI application
+Use a template for a native CLI application implemented using Kotlin and Swift:
+
+```kotlin
+kotlinAndSwiftCliApplication {
+    kotlinVersion = "1.9.22"
+    swiftVersion = "5.9"
+    runtime {
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
+        linux(glibc, x64)
+    }
+}
+```
+
+or perhaps:
+
+```kotlin
+cliApplication {
+    // Templates for implementation languages and target runtimes
+    kotlin("1.9.22")
+    swift("5.9")
+    tier1Targets()
+}
+```
 
 ## CLI application implemented using Kotlin and packaged as a JVM application and as native executables
 
@@ -249,11 +383,25 @@ cliApplication {
 }
 ```
 
+**Pattern 2a**
+
+```kotlin
+kotlinCliApplication {
+    kotlinVersion = "1.9.22"
+    runtime {
+        jvm(21)
+        macOS("12.0", aarch64)
+        macOS("12.0", x64)
+    }
+}
+```
+
 ## Android application implemented using Java
 
 **Pattern 1a**
 
 ```kotlin
+// A general purpose "mobile" application
 mobileApplication {
     implementation {
         java(21)
@@ -261,6 +409,15 @@ mobileApplication {
     runtime {
         android("12.0")
     }
+}
+```
+
+**Pattern 2a**
+
+```kotlin
+javaAndroidApplication {
+    javaVersion = 21
+    androidVersion = "12.0"
 }
 ```
 
@@ -277,6 +434,16 @@ mobileApplication {
     runtime {
         android("12.0")
     }
+}
+```
+
+**Pattern 2a**
+
+```kotlin
+javaAndKotlinAndroidApplication {
+    javaVersion = 21
+    kotlinVersion = "12.0"
+    androidVersion = "12.0"
 }
 ```
 
@@ -297,6 +464,16 @@ mobileApplication {
 }
 ```
 
+**Pattern 2a**
+
+Something like:
+
+```kotlin
+fancyApplication {
+    // Implies all of the above
+}
+```
+
 ## iOS application implemented using Kotlin and Swift
 
 **Pattern 1a**
@@ -310,6 +487,16 @@ mobileApplication {
     runtime {
         iOS("14.0")
     }
+}
+```
+
+**Pattern 2a**
+
+```kotlin
+KotlinAndSwiftIOSApplication {
+    kotlinVersion = "1.9.22"
+    swiftVersion = "1.9.22"
+    iOSVersion = "14.0"
 }
 ```
 
@@ -329,6 +516,16 @@ mobileApplication {
 }
 ```
 
+**Pattern 2a**
+
+```kotlin
+kotlinMobileApplication {
+    kotlinVersion = "1.9.22"
+    androidVersion = "12.0"
+    iOS = "14.0"
+}
+```
+
 ## Library implemented using Kotlin that runs on the JVM
 
 **Pattern 1a**
@@ -341,6 +538,15 @@ library {
     runtime {
         jvm(21)
     }
+}
+```
+
+**Pattern 2a**
+
+```kotlin
+kotlinLibrary {
+    kotlinVersion = "1.9.22"
+    jvmVersion = "21"
 }
 ```
 
@@ -372,54 +578,5 @@ A library that runs in the Gradle worker processes and implemented using Java 8.
 ```kotlin
 workerLibrary {
     // other settings
-}
-```
-
-## Pattern 2: Named template
-
-Here are some examples of what this might look like:
-
-**A Kotlin mobile library**: a library implemented using a single version of Kotlin and that runs on Android and iOS devices.
-
-The developer declares the target version of the devices.
-
-```kotlin
-kotlinMobileLibrary {
-    kotlinVersion = "1.9.22"
-    androidVersion = "12.0"
-    iOSVersion = "14.0"
-    // other settings
-}
-```
-
-**A Kotlin multiplatform library**: a library implemented using a single version of Kotlin and that runs on one or more targets.
-
-The developer declares the Kotlin language version and the targets and their versions.
-
-```kotlin
-kotlinLibrary {
-    kotlinVersion = "1.9.22"
-    targets {
-        jvm(21)
-        browser("ECMAScript 2019")
-        android("12.0")
-        macOS("12.0", aarch64)
-        macOS("12.0", x64)
-    }
-    // other settings
-}
-```
-
-**An Android application**: an application that runs on Android devices.
-
-The developer declares the implementation languages and target Android version.
-
-```kotlin
-androidApplication {
-    androidVersion = "12.0"
-    implementation {
-        kotlin("1.9.22")
-        java(21)
-    }
 }
 ```
