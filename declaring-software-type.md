@@ -15,21 +15,22 @@ These are all important decisions for a developer to make, so they should be abl
 
 The examples below use several different patterns to define a given software type:
 
-- Developer declares each aspect separately
+- Pattern 1: developer declares each aspect separately
     - pattern 1a: Using a block to represent the software usage with the other details nested. Plugin are not explicitly applied.
-- Developer uses a named template and fills in the missing details, if any
-    - pattern 2a: Using a block to represent the named template. Plugin are not explicitly applied.
+- Pattern 2: developer uses a named template and fills in the missing details, if any
+    - pattern 2a: Using a top level block to represent the named template. Plugin are not explicitly applied.
+    - pattern 2b: Using nested blocks to represent the named template. Plugin are not explicitly applied.
 
 The template in pattern 2 would provide fixed values for some of the software aspects and allow the developer to declare other aspects. Some or even all of these declarable aspects
 can have default values.
 
-In the examples below, you can see that pattern 1 is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and
-runtime (version) makes sense or is supported. Pattern 2, on the other hand, allows the contents of the block to be strongly typed based on the name of the template.
+Pattern 1 is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and runtime (version) makes sense or is
+supported. Pattern 2, on the other hand, allows the contents of the block to be strongly typed based on the template.
 
-For beginners, the "implementation" and "runtime" concepts are unnecessary, particularly for Java applications. Pattern 1 exposes these to every developer, whereas pattern 2 allows
-a simplified view.
+Pattern 1 exposes the "implementation" and "runtime" concepts to every developer. This is often unnecessary, particularly for beginners writing Java software. Pattern 2 allows
+a simplified view that captures a specific pattern.
 
-Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constrained way to express pattern 1
+Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constrained way to express pattern 1.
 
 ## JVM CLI application implemented using Java
 
@@ -42,14 +43,14 @@ Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constraine
 // A general purpose CLI application type
 cliApplication {
 
-    // Implementation languages. At least one implementation language is required
+    // Declare the implementation languages. At least one implementation language is required
     implementation {
         java(21) {
             // Some Java 21 language settings
         }
     }
 
-    // Target runtimes for the application. At least one runtime is required
+    // Declare the target runtimes for the application. At least one runtime is required
     runtime {
         jvm(21) {
             // Some Java 21 runtime settings
@@ -58,7 +59,7 @@ cliApplication {
 }
 ```
 
-This could be simplified by using a convention for the target runtimes for software components with a Java implementation:
+This can be simplified by using a convention for the target runtimes for software components with a Java implementation:
 
 ```kotlin
 cliApplication {
@@ -66,7 +67,7 @@ cliApplication {
         java(21)
     }
 
-    // Use Java 21 as the runtime as well
+    // Use Java 21 as the runtime as well, with default settings
 }
 ```
 
@@ -84,7 +85,8 @@ javaCliApplication {
     // This is required
     javaVersion = 21
 
-    // other settings
+    // Java 21 language settings
+    // Java 21 runtime settings
 }
 ```
 
@@ -101,16 +103,19 @@ cliApplication {
 }
 ```
 
-We could potentially allow templates to be used at other levels, for example:
+**Pattern 2a**
+
+Use a nested template that defines Java as both the implementation and target for a software component:
 
 ```kotlin
 
 // Use the general purpose CLI application type
 cliApplication {
 
-    // This is a template that expands to the above
-    // potentially it cannot be used with the `implementation { }` and `runtime { }` blocks because it already implies these things
+    // A template that defines the implementation language and target runtime
     java(21)
+
+    // potentially, cannot use the `implementation { }` and `runtime { }` blocks because these are already implied
 }
 ```
 
@@ -121,7 +126,9 @@ cliApplication {
 ```kotlin
 cliApplication {
     implementation {
-        kotlin("1.9.22")
+        kotlin("1.9.22") {
+            // Kotlin language settings
+        }
     }
     runtime {
         jvm(21)
@@ -143,15 +150,23 @@ kotlinCliApplication {
 }
 ```
 
-Or perhaps:
+**Pattern 2b**
 
 ```kotlin
 cliApplication {
-    // This is a template that defines the implementation languages
+    // A template that defines Kotlin as the single implementation language
     kotlin("1.9.22")
 
-    // This is a template that defines the target runtimes
+    // A template that defines the JVM as the single target runtime
     jvm(21)
+}
+```
+
+or perhaps:
+
+```kotlin
+cliApplication {
+    kotlinJvm("1.9.22", 21)
 }
 ```
 
@@ -194,7 +209,7 @@ kotlinAndJavaCliApplication {
 }
 ```
 
-or perhaps:
+**Pattern 2b**
 
 ```kotlin
 cliApplication {
@@ -223,12 +238,22 @@ cliApplication {
 
 **Pattern 2a**
 
-It's unlikely we'd use a template called something like "javaAndKotlinCliApplicationWithMultipleTargets { }". It's much more likely the template would be called something like
-"fancyProductApplication":
+It's unlikely we'd use a template called something like "javaAndKotlinCliApplicationWithMultipleTargets { }". It's more likely the template would be something custom called, for
+example, "myProductApp":
 
 ```kotlin
-fancyProductApplication {
+myProductApp {
     // All of the above is already implied
+}
+```
+
+**Pattern 2b**
+
+```kotlin
+cliApplication {
+    java(17)
+    java(21)
+    kotlin("1.9.22")
 }
 ```
 
@@ -257,7 +282,7 @@ cliApplication {
 }
 ```
 
-Tests could be split out as a separate top-level block:
+Tests might be split out as a separate top-level block:
 
 ```kotlin
 cliApplication {
@@ -281,8 +306,6 @@ tests {
 }
 ```
 
-Conventions for the unit test implementation languages and target runtimes could simplify these.
-
 **Pattern 2a**
 
 Use a template for a Java CLI application with Groovy tests:
@@ -296,13 +319,13 @@ javaCliApplicationWithGroovyTests {
 }
 ```
 
-or perhaps:
+**Pattern 2b**
 
 ```kotlin
 cliApplication {
     java(21)
     tests {
-        // A template that defines the implementation language for all test suites 
+        // A template that defines the implementation language for the test suites
         groovy("5.0")
     }
 }
@@ -326,7 +349,7 @@ cliApplication {
 }
 ```
 
-This could be simplified using a convention that uses Kotlin's "tier 1" targets:
+This could be simplified using a convention that uses Kotlin's "tier 1" targets (different to the above):
 
 ```kotlin
 cliApplication {
@@ -353,14 +376,16 @@ kotlinAndSwiftCliApplication {
 }
 ```
 
-or perhaps:
+**Pattern 2b**
 
 ```kotlin
 cliApplication {
-    // Templates for implementation languages and target runtimes
+    // Templates for implementation languages
     kotlin("1.9.22")
     swift("5.9")
-    tier1Targets()
+  
+    // A template for the target runtimes 
+    myNativeTargets()
 }
 ```
 
@@ -396,6 +421,17 @@ kotlinCliApplication {
 }
 ```
 
+**Pattern 2b**
+
+```kotlin
+cliApplication {
+    kotlin("1.9.22")
+
+    macOS("12.0")
+    jvm(21)
+}
+```
+
 ## Android application implemented using Java
 
 **Pattern 1a**
@@ -418,6 +454,24 @@ mobileApplication {
 javaAndroidApplication {
     javaVersion = 21
     androidVersion = "12.0"
+}
+```
+
+**Pattern 2b**
+
+```kotlin
+mobileApplication {
+    // Templates for implementation language and target runtime
+    android("12.0")
+    java(21)
+}
+```
+
+or perhaps
+
+```kotlin
+mobileApplication {
+    javaAndroid(21, "12.0")
 }
 ```
 
@@ -447,6 +501,17 @@ javaAndKotlinAndroidApplication {
 }
 ```
 
+**Pattern 2b**
+
+```kotlin
+mobileApplication {
+    // Templates for implementation language and target runtime
+    android("12.0")
+    kotlin("1.9.22")
+    java(21)
+}
+```
+
 ## Android application implemented using Kotlin, Java and C++
 
 **Pattern 1a**
@@ -469,8 +534,19 @@ mobileApplication {
 Something like:
 
 ```kotlin
-fancyApplication {
+myProductApp {
     // Implies all of the above
+}
+```
+
+**Pattern 2b**
+
+```kotlin
+mobileApplication {
+    // Templates for implementation language and target runtime
+    android("12.0")
+    java(21)
+    kotlin("1.9.22")
 }
 ```
 
@@ -500,6 +576,17 @@ KotlinAndSwiftIOSApplication {
 }
 ```
 
+**Pattern 2b**
+
+```kotlin
+mobileApplication {
+    // Templates for implementation language and target runtime
+    iOS("14.0")
+    kotlin("1.9.22")
+    swift("14.0")
+}
+```
+
 ## Mobile application implemented using Kotlin that runs on iOS and Android
 
 **Pattern 1a**
@@ -523,6 +610,17 @@ kotlinMobileApplication {
     kotlinVersion = "1.9.22"
     androidVersion = "12.0"
     iOS = "14.0"
+}
+```
+
+**Pattern 2b**
+
+```kotlin
+mobileApplication {
+    // Templates for implementation language and target runtime
+    android("12.0")
+    iOS("14.0")
+    kotlin("1.9.22")
 }
 ```
 
