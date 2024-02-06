@@ -87,10 +87,12 @@ javaCliApplication {
 
     // Java 21 language settings
     // Java 21 runtime settings
+
+    // Cannot use the `implementation { }` or `runtime { }` blocks because these are already implied
 }
 ```
 
-This template expands to something like (this is just to illustrate the effect, there won't be some kind of "template language"):
+This template expands to something like (this is just to illustrate the result; there won't be some kind of "template language"):
 
 ```kotlin
 cliApplication {
@@ -105,7 +107,7 @@ cliApplication {
 
 **Pattern 2a**
 
-Use a nested template that defines Java as both the implementation and target for a software component:
+Use a nested template that defines Java as both the implementation and target for the software component it is attached to:
 
 ```kotlin
 
@@ -115,9 +117,11 @@ cliApplication {
     // A template that defines the implementation language and target runtime
     java(21)
 
-    // potentially, cannot use the `implementation { }` and `runtime { }` blocks because these are already implied
+    // Cannot use the `implementation { }` or `runtime { }` blocks because these are already implied
 }
 ```
+
+This template would be reusable for other software components, for example unit tests.
 
 ## JVM CLI application implemented using Kotlin
 
