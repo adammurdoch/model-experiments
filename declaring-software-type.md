@@ -90,7 +90,7 @@ javaCliApplication {
 }
 ```
 
-This template expands to something like:
+This template expands to something like (this is just to illustrate the effect, there won't be some kind of "template language"):
 
 ```kotlin
 cliApplication {
