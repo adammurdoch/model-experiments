@@ -25,12 +25,12 @@ The template in pattern 2 would provide fixed values for some of the software as
 can have default values.
 
 Pattern 1 is very flexible and can express a wide range of software. However, not every combination of implementation language (version) and runtime (version) makes sense or is
-supported. Pattern 2, on the other hand, allows the contents of the block to be strongly typed based on the template.
+supported. Pattern 2, on the other hand, allows the contents of the block to be strongly typed based on the template and so constrain the available combinations.
 
 Pattern 1 exposes the "implementation" and "runtime" concepts to every developer. This is often unnecessary, particularly for beginners writing Java software. Pattern 2 allows
 a simplified view that captures a specific pattern.
 
-Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constrained way to express pattern 1.
+Patterns 1 and 2 are not mutually exclusive. Pattern 2 is just a more constrained way to express pattern 1, and every pattern 2 can be transformed into a pattern 1.
 
 ## JVM CLI application implemented using Java
 
